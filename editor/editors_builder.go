@@ -115,7 +115,7 @@ type editor struct {
 	columns []string
 }
 
-func (e editor) addColumn(column string) {
+func (e *editor) addColumn(column string) {
 	for _, col := range e.columns {
 		if col == column {
 			return
