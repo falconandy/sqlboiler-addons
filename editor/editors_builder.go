@@ -143,8 +143,18 @@ func (o *%[1]s) E() *%[1]sE {
 	return &%[1]sE{S: o}
 }
 
-func %[1]sEditor() *%[1]sE {
-	return &%[1]sE{S: &%[1]s{}}
+func %[1]sEditor(o **%[1]s) *%[1]sE {
+	var s *%[1]s
+	if o == nil || *o == nil {
+		s = &%[1]s{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &%[1]sE{S: s}
 }`, entity.Name))
 }
 
@@ -172,11 +182,16 @@ func (b *Builder) writeEditorFunction(w mustWriter, entity *model.Entity, signat
 	}
 	w.Write(fmt.Sprintf("func (e *%sE) %s(", entity.Name, signature.Name))
 
+	columnListName := "Whitelist"
+	if signature.Name == "Insert" {
+		columnListName = "Greylist"
+	}
+
 	var arguments []string
 	var pars []string
 	for _, p := range signature.Parameters {
 		if p.Type == "boil.Columns" && len(p.Names) == 1 {
-			arguments = append(arguments, "boil.Whitelist(e.columns...)")
+			arguments = append(arguments, fmt.Sprintf("boil.%s(columns...)", columnListName))
 		} else {
 			pars = append(pars, fmt.Sprintf("%s %s", strings.Join(p.Names, ", "), p.Type))
 			arguments = append(arguments, p.Names...)
@@ -187,6 +202,8 @@ func (b *Builder) writeEditorFunction(w mustWriter, entity *model.Entity, signat
 		w.Write(" " + signature.Return)
 	}
 	w.Writeln(" {")
+	w.Writeln("\tcolumns := e.columns")
+	w.Writeln("\te.columns = nil")
 	w.Writeln(fmt.Sprintf("\treturn e.S.%s(%s)", signature.Name, strings.Join(arguments, ", ")))
 	w.Writeln("}")
 }

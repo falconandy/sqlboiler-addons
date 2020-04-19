@@ -15,7 +15,7 @@ type editor struct {
 	columns []string
 }
 
-func (e editor) addColumn(column string) {
+func (e *editor) addColumn(column string) {
 	for _, col := range e.columns {
 		if col == column {
 			return
@@ -33,8 +33,18 @@ func (o *APIKey) E() *APIKeyE {
 	return &APIKeyE{S: o}
 }
 
-func APIKeyEditor() *APIKeyE {
-	return &APIKeyE{S: &APIKey{}}
+func APIKeyEditor(o **APIKey) *APIKeyE {
+	var s *APIKey
+	if o == nil || *o == nil {
+		s = &APIKey{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &APIKeyE{S: s}
 }
 
 func (e *APIKeyE) SetID(id int) *APIKeyE {
@@ -55,7 +65,7 @@ func (e *APIKeyE) SetSecret(secret string) *APIKeyE {
 	return e
 }
 
-func (e *APIKeyE) SetComment(comment string) *APIKeyE {
+func (e *APIKeyE) SetComment(comment null.String) *APIKeyE {
 	e.S.Comment = comment
 	e.addColumn(APIKeyColumns.Comment)
 	return e
@@ -75,13 +85,17 @@ func (e *APIKeyE) SetCreatedAt(createdAt time.Time) *APIKeyE {
 
 // Insert a single record using an executor.
 func (e *APIKeyE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the APIKey.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *APIKeyE) Update(exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(exec, boil.Whitelist(columns...))
 }
 
 type AwsKeyE struct {
@@ -93,8 +107,18 @@ func (o *AwsKey) E() *AwsKeyE {
 	return &AwsKeyE{S: o}
 }
 
-func AwsKeyEditor() *AwsKeyE {
-	return &AwsKeyE{S: &AwsKey{}}
+func AwsKeyEditor(o **AwsKey) *AwsKeyE {
+	var s *AwsKey
+	if o == nil || *o == nil {
+		s = &AwsKey{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &AwsKeyE{S: s}
 }
 
 func (e *AwsKeyE) SetID(id int) *AwsKeyE {
@@ -129,13 +153,17 @@ func (e *AwsKeyE) SetCreatedAt(createdAt time.Time) *AwsKeyE {
 
 // Insert a single record using an executor.
 func (e *AwsKeyE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the AwsKey.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *AwsKeyE) Update(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(ctx, exec, boil.Whitelist(columns...))
 }
 
 type ConfigTemplateE struct {
@@ -147,8 +175,18 @@ func (o *ConfigTemplate) E() *ConfigTemplateE {
 	return &ConfigTemplateE{S: o}
 }
 
-func ConfigTemplateEditor() *ConfigTemplateE {
-	return &ConfigTemplateE{S: &ConfigTemplate{}}
+func ConfigTemplateEditor(o **ConfigTemplate) *ConfigTemplateE {
+	var s *ConfigTemplate
+	if o == nil || *o == nil {
+		s = &ConfigTemplate{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &ConfigTemplateE{S: s}
 }
 
 func (e *ConfigTemplateE) SetID(id int) *ConfigTemplateE {
@@ -177,13 +215,17 @@ func (e *ConfigTemplateE) SetCreatedAt(createdAt time.Time) *ConfigTemplateE {
 
 // Insert a single record using an executor.
 func (e *ConfigTemplateE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the ConfigTemplate.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *ConfigTemplateE) Update(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(ctx, exec, boil.Whitelist(columns...))
 }
 
 type EngineSettingE struct {
@@ -195,8 +237,18 @@ func (o *EngineSetting) E() *EngineSettingE {
 	return &EngineSettingE{S: o}
 }
 
-func EngineSettingEditor() *EngineSettingE {
-	return &EngineSettingE{S: &EngineSetting{}}
+func EngineSettingEditor(o **EngineSetting) *EngineSettingE {
+	var s *EngineSetting
+	if o == nil || *o == nil {
+		s = &EngineSetting{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &EngineSettingE{S: s}
 }
 
 func (e *EngineSettingE) SetID(id int) *EngineSettingE {
@@ -225,13 +277,17 @@ func (e *EngineSettingE) SetCreatedAt(createdAt time.Time) *EngineSettingE {
 
 // Insert a single record using an executor.
 func (e *EngineSettingE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the EngineSetting.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *EngineSettingE) Update(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(ctx, exec, boil.Whitelist(columns...))
 }
 
 type HostE struct {
@@ -243,8 +299,18 @@ func (o *Host) E() *HostE {
 	return &HostE{S: o}
 }
 
-func HostEditor() *HostE {
-	return &HostE{S: &Host{}}
+func HostEditor(o **Host) *HostE {
+	var s *Host
+	if o == nil || *o == nil {
+		s = &Host{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &HostE{S: s}
 }
 
 func (e *HostE) SetID(id int) *HostE {
@@ -315,13 +381,17 @@ func (e *HostE) SetAwsInstanceID(awsInstanceID null.String) *HostE {
 
 // Insert a single record using an executor.
 func (e *HostE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the Host.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *HostE) Update(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(ctx, exec, boil.Whitelist(columns...))
 }
 
 type StorefrontAppE struct {
@@ -333,8 +403,18 @@ func (o *StorefrontApp) E() *StorefrontAppE {
 	return &StorefrontAppE{S: o}
 }
 
-func StorefrontAppEditor() *StorefrontAppE {
-	return &StorefrontAppE{S: &StorefrontApp{}}
+func StorefrontAppEditor(o **StorefrontApp) *StorefrontAppE {
+	var s *StorefrontApp
+	if o == nil || *o == nil {
+		s = &StorefrontApp{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &StorefrontAppE{S: s}
 }
 
 func (e *StorefrontAppE) SetID(id int) *StorefrontAppE {
@@ -405,13 +485,17 @@ func (e *StorefrontAppE) SetCreatedAt(createdAt time.Time) *StorefrontAppE {
 
 // Insert a single record using an executor.
 func (e *StorefrontAppE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the StorefrontApp.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *StorefrontAppE) Update(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(ctx, exec, boil.Whitelist(columns...))
 }
 
 type StorefrontE struct {
@@ -423,8 +507,18 @@ func (o *Storefront) E() *StorefrontE {
 	return &StorefrontE{S: o}
 }
 
-func StorefrontEditor() *StorefrontE {
-	return &StorefrontE{S: &Storefront{}}
+func StorefrontEditor(o **Storefront) *StorefrontE {
+	var s *Storefront
+	if o == nil || *o == nil {
+		s = &Storefront{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &StorefrontE{S: s}
 }
 
 func (e *StorefrontE) SetID(id int) *StorefrontE {
@@ -447,13 +541,17 @@ func (e *StorefrontE) SetCreatedAt(createdAt time.Time) *StorefrontE {
 
 // Insert a single record using an executor.
 func (e *StorefrontE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the Storefront.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *StorefrontE) Update(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(ctx, exec, boil.Whitelist(columns...))
 }
 
 type UserE struct {
@@ -465,8 +563,18 @@ func (o *User) E() *UserE {
 	return &UserE{S: o}
 }
 
-func UserEditor() *UserE {
-	return &UserE{S: &User{}}
+func UserEditor(o **User) *UserE {
+	var s *User
+	if o == nil || *o == nil {
+		s = &User{}
+		if o != nil {
+			*o = s
+		}
+	} else {
+		s = *o
+	}
+
+	return &UserE{S: s}
 }
 
 func (e *UserE) SetID(id string) *UserE {
@@ -507,11 +615,15 @@ func (e *UserE) SetCreatedAt(createdAt time.Time) *UserE {
 
 // Insert a single record using an executor.
 func (e *UserE) Insert(ctx context.Context, exec boil.ContextExecutor) error {
-	return e.S.Insert(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Insert(ctx, exec, boil.Greylist(columns...))
 }
 
 // Update uses an executor to update the User.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (e *UserE) Update(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
-	return e.S.Update(ctx, exec, boil.Whitelist(e.columns...))
+	columns := e.columns
+	e.columns = nil
+	return e.S.Update(ctx, exec, boil.Whitelist(columns...))
 }

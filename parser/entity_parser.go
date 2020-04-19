@@ -21,12 +21,19 @@ func ParseEntityFile(filePath string) (*model.Entity, error) {
 		return nil, err
 	}
 
-	insertSignature, updateSignature, err := findCRUDMethods(filePath, entity.Name)
+	content, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, errors.Wrap(err, "can't read model file")
+	}
+
+	insertSignature, updateSignature, err := findCRUDMethods(string(content), entity.Name)
 	if err != nil {
 		return nil, err
 	}
 	entity.InsertSignature = insertSignature
 	entity.UpdateSignature = updateSignature
+
+	entity.ColumnsWithoutDefaultName = findColumnsWithoutDefaultName(string(content), entity.Name)
 
 	return entity, nil
 }
@@ -91,12 +98,8 @@ func findEntity(filePath string) (*model.Entity, error) {
 	return nil, errors.New("entity type not found")
 }
 
-func findCRUDMethods(filePath, entityName string) (insertSignature, updateSignature []string, err error) {
-	data, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "can't read model file")
-	}
-	lines := strings.Split(string(data), "\n")
+func findCRUDMethods(fileContent, entityName string) (insertSignature, updateSignature []string, err error) {
+	lines := strings.Split(fileContent, "\n")
 	insertPrefix := fmt.Sprintf("func (o *%s) Insert(", entityName)
 	updatePrefix := fmt.Sprintf("func (o *%s) Update(", entityName)
 	for i, line := range lines {
@@ -138,4 +141,16 @@ func findCRUDMethods(filePath, entityName string) (insertSignature, updateSignat
 	}
 
 	return insertSignature, updateSignature, nil
+}
+
+func findColumnsWithoutDefaultName(fileContent, entityName string) string {
+	lines := strings.Split(fileContent, "\n")
+	prefix := strings.ToLower(entityName + "columnswithoutdefault ")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(strings.ToLower(line), prefix) {
+			return strings.TrimSpace(line[:len(prefix)])
+		}
+	}
+	return ""
 }

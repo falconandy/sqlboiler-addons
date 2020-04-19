@@ -26,7 +26,7 @@ type APIKey struct {
 	ID        int       `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Key       string    `boil:"key" json:"key" toml:"key" yaml:"key"`
 	Secret    string    `boil:"secret" json:"secret" toml:"secret" yaml:"secret"`
-	Comment   string    `boil:"comment" json:"comment" toml:"comment" yaml:"comment"`
+	Comment   null.String    `boil:"comment" json:"comment" toml:"comment" yaml:"comment"`
 	Disabled  bool      `boil:"disabled" json:"disabled" toml:"disabled" yaml:"disabled"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
