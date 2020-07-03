@@ -78,9 +78,9 @@ func (b *Builder) Build(writer io.Writer) error {
 				w.Writeln("")
 
 				if fieldPackageNames["null"] {
-					w.Writeln("\t\"github.com/volatiletech/null\"")
+					w.Writeln("\t\"github.com/volatiletech/null/v8\"")
 				}
-				w.Writeln("\t\"github.com/volatiletech/sqlboiler/boil\"")
+				w.Writeln("\t\"github.com/volatiletech/sqlboiler/v4/boil\"")
 				w.Writeln(")")
 			}
 
